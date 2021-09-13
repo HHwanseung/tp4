@@ -8,10 +8,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.zerock.tp4.board.config.BoardRootConfig;
 import org.zerock.tp4.board.domain.Board;
-import org.zerock.tp4.board.domain.Criteria;
 import org.zerock.tp4.common.config.RootConfig;
+import org.zerock.tp4.common.dto.PageRequestDTO;
 
-import java.util.List;
 import java.util.stream.IntStream;
 
 @Log4j2
@@ -36,13 +35,26 @@ public class BoardMapperTests {
 
     @Test
     public void testList(){
-        boardMapper.getList().forEach(board -> log.info(board));
+
+        PageRequestDTO pageRequestDTO =
+                PageRequestDTO.builder()
+                        .type("TC")
+                        .keyword("AA")
+                        .build();
+
+        log.info(pageRequestDTO);
+
+        boardMapper.getList(pageRequestDTO).forEach(board -> log.info(board));
     }
 
     @Test
     public void testSelect(){
 
-        log.info(boardMapper.select(113L));
+        Board board = boardMapper.select(113L);
+
+        log.info(board);
+        log.info("--------------------------");
+        board.getAttachList().forEach(attach -> log.info(attach));
     }
 
     @Test
@@ -63,17 +75,5 @@ public class BoardMapperTests {
         log.info(boardMapper.update(board));
     }
 
-    @Test
-    public void testPaging(){
-
-        Criteria cri = new Criteria();
-        cri.setPageNum(3);
-        cri.setAmount(10);
-
-        List<Board> list = boardMapper.getListWithPaging(cri);
-
-        list.forEach(board -> log.info(board.getBno()));
-
-    }
 
 }

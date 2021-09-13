@@ -16,8 +16,12 @@ public class TimeServiceImpl implements TimeService{
 
     public String getNow() {
 
-        log.info("service.......getNow()");
-
         return timeMapper.getTime2();
+    }
+
+    @Override
+    public void addString(String str) {
+        timeMapper.insertE1(str);
+        timeMapper.insertE2(str);
     }
 }

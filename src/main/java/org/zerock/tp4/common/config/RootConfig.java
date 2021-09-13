@@ -2,49 +2,64 @@ package org.zerock.tp4.common.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.ibatis.session.SqlSessionFactory;
+import lombok.extern.log4j.Log4j2;
+import org.apache.ibatis.session.*;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.zerock.tp4.board.config.BoardRootConfig;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.ArrayList;
 
-@Configuration //이거 거니깐 Bean표시가 생김
+@Log4j2
+@Configuration
 @Import(BoardRootConfig.class)
-public class RootConfig { //스캔을 할 일을 없
+@EnableTransactionManagement
+public class RootConfig {
+
 
     @Bean
-    public SqlSessionFactory sqlSessionFactory() throws Exception{
+    public SqlSessionFactory sqlSessionFactory()throws Exception{
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource());
+
         return sqlSessionFactoryBean.getObject();
     }
-
 
     @Bean
     public DataSource dataSource(){
         HikariConfig config = new HikariConfig();
-        config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        config.setJdbcUrl("jdbc:mysql://localhost:3306/springdb");
+        //config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+
+        config.setDriverClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy");
+
+        //config.setJdbcUrl("jdbc:mysql://localhost:3306/springdb");
+        config.setJdbcUrl("jdbc:log4jdbc:mysql://localhost:3306/springdb");
         config.setUsername("springuser");
         config.setPassword("springuser");
-
         HikariDataSource dataSource = new HikariDataSource(config);
-
         return dataSource;
     }
 
-    @Bean(name = "names") //메서드를 만들고 Bean을 걸어주면 빈으로 생성해줌
+    @Bean
+    public TransactionManager transactionManager(){
+        return new DataSourceTransactionManager(dataSource());
+    }
+
+    @Bean( name = "names")
     public ArrayList<String> names(){
         ArrayList<String> list = new ArrayList<>();
         list.add("AAA");
-        list.add("AAA");
-        list.add("AAA");
+        list.add("BBB");
+        list.add("CCC");
         return list;
     }
 }

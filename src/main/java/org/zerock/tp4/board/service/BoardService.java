@@ -1,21 +1,22 @@
 package org.zerock.tp4.board.service;
 
-import org.zerock.tp4.board.domain.Criteria;
+import org.springframework.transaction.annotation.Transactional;
 import org.zerock.tp4.board.dto.BoardDTO;
+import org.zerock.tp4.common.dto.PageRequestDTO;
+import org.zerock.tp4.common.dto.PageResponseDTO;
 
-import java.util.List;
-
+@Transactional
 public interface BoardService {
 
-    Long register(BoardDTO boardDto);
+    Long register(BoardDTO boardDTO);
 
-//    List<BoardDTO> getDTOList();
-
-    List<BoardDTO> getDTOList(Criteria cri);
+    PageResponseDTO<BoardDTO> getDTOList(PageRequestDTO pageRequestDTO);
 
     BoardDTO read(Long bno);
 
-    Boolean remove(Long bno);
+    boolean remove(Long bno);
 
-    Boolean modify(BoardDTO boardDTO);
+    boolean modify(BoardDTO boardDTO);
+
+
 }

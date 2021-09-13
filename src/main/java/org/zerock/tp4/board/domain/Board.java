@@ -3,8 +3,12 @@ package org.zerock.tp4.board.domain;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.zerock.tp4.board.dto.BoardDTO;
+import org.zerock.tp4.common.dto.UploadResponseDTO;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @ToString
@@ -16,6 +20,10 @@ public class Board {
     private Long bno;
     private String title,content,writer;
     private LocalDateTime regDate,modDate;
+    private int replyCnt;
+
+    @Builder.Default
+    private List<BoardAttach> attachList = new ArrayList<>();
 
     public BoardDTO getDTO(){
         BoardDTO boardDTO = BoardDTO.builder()
@@ -27,11 +35,28 @@ public class Board {
                 .modDate(modDate)
                 .build();
 
+        //BoardAttach -> UploadResponseDTO -> List
+        List<UploadResponseDTO> uploadResponseDTOS = attachList.stream().map(attach -> {
+            UploadResponseDTO uploadResponseDTO = UploadResponseDTO.builder()
+                    .uuid(attach.getUuid())
+                    .fileName(attach.getFileName())
+                    .uploadPath(attach.getPath())
+                    .image(attach.isImage())
+                    .build();
+            return uploadResponseDTO;
+        }).collect(Collectors.toList());
+
+        boardDTO.setFiles(uploadResponseDTOS);
+
         return boardDTO;
     }
 
     public void setBno(Long bno) {
 
         this.bno = bno;
+    }
+
+    public void addAttach(BoardAttach attach){
+        attachList.add(attach);
     }
 }

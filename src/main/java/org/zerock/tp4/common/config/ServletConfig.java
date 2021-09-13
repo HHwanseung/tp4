@@ -1,5 +1,6 @@
 package org.zerock.tp4.common.config;
 
+
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.format.FormatterRegistry;
@@ -14,7 +15,7 @@ import org.zerock.tp4.common.converter.StringToLocalDateTimeConverter;
 
 @EnableWebMvc
 @Import(BoardServletConfig.class)
-@ComponentScan(basePackages = "org.zerock.tp4.common.exception")
+@ComponentScan(basePackages = {"org.zerock.tp4.common.exception", "org.zerock.tp4.common.controller"})
 public class ServletConfig implements WebMvcConfigurer {
 
     @Override
@@ -34,7 +35,7 @@ public class ServletConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        //webapp resources folder
+        //이 경로 (webapp resources folder) 는 스프링 영향을 주지 않겠다는 의미.
         registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 
     }

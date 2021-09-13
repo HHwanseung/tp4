@@ -4,9 +4,13 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import org.zerock.tp4.board.config.BoardRootConfig;
 import org.zerock.tp4.board.config.BoardServletConfig;
+import org.zerock.tp4.security.config.SecurityConfig;
+import org.zerock.tp4.security.config.SecurityServletConfig;
 
 import javax.servlet.Filter;
+import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletRegistration;
+import javax.servlet.annotation.MultipartConfig;
 
 public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitializer {
 
@@ -16,7 +20,7 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
         logger.info("1----------------------------------");
         logger.info("1----------------------------------");
 
-        return new Class[] {RootConfig.class};
+        return new Class[] {RootConfig.class, SecurityConfig.class};
     }
 
     @Override
@@ -24,7 +28,7 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
         logger.info("2----------------------------------");
         logger.info("2----------------------------------");
 
-        return new Class[] {ServletConfig.class};
+        return new Class[] {ServletConfig.class, SecurityServletConfig.class};
     }
 
     @Override
@@ -44,5 +48,9 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
     @Override
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
         registration.setInitParameter("throwExceptionIfNoHandlerFound", "true");
+
+        MultipartConfigElement multipartConfigElement
+                =new MultipartConfigElement("/Users/hhwanseung/upload/temp", 1024*1024*10,1024*1024*20,1024*1024*1); //얼마까지 올리냐/얼마까지 받냐/임시저장사이즈
+        registration.setMultipartConfig(multipartConfigElement);
     }
 }
